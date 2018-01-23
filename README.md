@@ -2,7 +2,7 @@
 ---
 
 # Description
-Does a pg_dump on a database (configured via an input ini file), gzips it, and uploads it to a specific bucket in s3
+Does a pg_dump on a database (configured via an input ini file), gzips it, and uploads it to a specific bucket in AWS S3. If the bucket does not exist, it is automatically created. All backups have a user defined prefix, and ends in the format `_YYYYMMDD_HHmmSS_ZZZ.sql.gz`
 
 # Installation
 
