@@ -143,7 +143,7 @@ class S3Client:
 
     def upload(self, local_filename):
         check_file(local_filename)
-        self.check_bucket_existence()
+        # self.check_bucket_existence()
         base_filename = os.path.basename(local_filename)
         key = base_filename # self.__generate_key(base_filename)
         self.__client.upload_file(local_filename,
