@@ -181,10 +181,10 @@ def main():
     db_password = cfg['db_password']
     db_port = cfg['db_port']
     db_name = cfg['db_name']
-    s3_endpoint_url = cfg['s3_endpoint_url']
+    s3_endpoint_url = cfg['s3_endpoint_url'] if config.has_option(None, 's3_endpoint_url') else None
     s3_data_bucket = cfg['s3_data_bucket']
-    s3_access_key = cfg['s3_access_key']
-    s3_secret_key = cfg['s3_secret_key']
+    s3_access_key = cfg['s3_access_key'] if config.has_option(None, 's3_access_key') else None
+    s3_secret_key = cfg['s3_secret_key'] if config.has_option(None, 's3_secret_key') else None
     backup_file_prefix = cfg['backup_file_prefix']
     backup_output_dir = cfg['backup_output_dir']
     dumper = DB_Dump(db_user, db_password, host=db_host, port=db_port, dump_filename_prefix=backup_file_prefix, output_dir=backup_output_dir)
