@@ -174,7 +174,7 @@ def main():
                         format='%(asctime)s %(name)-12s %(levelname)-8s %(message)s',
                         datefmt='%m-%d %H:%M',
                         filename=os.path.expandvars(logfile),
-                        filemode='w')
+                        filemode='a')
 
     console = logging.StreamHandler()
     console.setLevel(logging.INFO)
