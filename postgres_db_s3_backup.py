@@ -9,24 +9,9 @@ import sys
 import logging
 import psycopg2
 
-logging.basicConfig(level=logging.DEBUG,
-                    format='%(asctime)s %(name)-12s %(levelname)-8s %(message)s',
-                    datefmt='%m-%d %H:%M',
-                    filename='./postgres-db-s3-backup.log',
-                    filemode='w')
-
-console = logging.StreamHandler()
-console.setLevel(logging.INFO)
-formatter = logging.Formatter('%(name)-12s: %(levelname)-8s %(message)s')
-console.setFormatter(formatter)
-
-log_main = logging.getLogger("main")
-log_db_dump = logging.getLogger("DB_Dump")
-log_s3 = logging.getLogger("S3Client")
-
-log_main.addHandler(console)
-log_db_dump.addHandler(console)
-log_s3.addHandler(console)
+log_main = None
+log_db_dump = None
+log_s3 = None
 
 
 def run_command(command):
@@ -164,6 +149,12 @@ class S3Client:
     def is_bucket_exists(self, name):
         return name in self.__buckets
 
+def setup_logfile(logfile):
+    parent_dir = os.path.dirname(logfile)
+    if not os.path.exists(parent_dir):
+        os.makedirs(parent_dir)
+
+
 
 def main():
     if len(sys.argv) < 2:
@@ -176,6 +167,32 @@ def main():
     config = configparser.ConfigParser()
     config.read(ini_file)
     cfg = config.defaults()
+    logfile = cfg['logfile']
+    setup_logfile(logfile)
+
+    logging.basicConfig(level=logging.DEBUG,
+                        format='%(asctime)s %(name)-12s %(levelname)-8s %(message)s',
+                        datefmt='%m-%d %H:%M',
+                        filename=os.path.expandvars(logfile),
+                        filemode='w')
+
+    console = logging.StreamHandler()
+    console.setLevel(logging.INFO)
+    formatter = logging.Formatter('%(name)-12s: %(levelname)-8s %(message)s')
+    console.setFormatter(formatter)
+
+    global log_main
+    global log_db_dump
+    global log_s3
+
+    log_main = logging.getLogger("main")
+    log_db_dump = logging.getLogger("DB_Dump")
+    log_s3 = logging.getLogger("S3Client")
+
+    log_main.addHandler(console)
+    log_db_dump.addHandler(console)
+    log_s3.addHandler(console)
+
     db_user = cfg['db_user']
     db_host = cfg['db_host']
     db_password = cfg['db_password']
